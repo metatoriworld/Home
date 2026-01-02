@@ -35,7 +35,7 @@
             transition: width 0.1s ease-out;
         }
 
-        /* 하단 컨트롤 영역 (커뮤니티 + 사운드) */
+        /* 하단 컨트롤 영역 */
         .bottom-controls {
             position: fixed;
             bottom: 40px;
@@ -47,7 +47,6 @@
             mix-blend-mode: difference;
         }
 
-        /* [연결 완료] 커뮤니티 입장 버튼 */
         .community-btn {
             text-decoration: none;
             color: white;
@@ -67,7 +66,6 @@
             transform: translateY(-3px);
         }
 
-        /* 사운드 컨트롤 */
         .audio-control {
             cursor: pointer;
             display: flex;
@@ -85,7 +83,6 @@
         .audio-bars { display: flex; align-items: flex-end; gap: 3px; height: 18px; width: 15px; }
         .bar { width: 3px; background: white; height: 4px; border-radius: 1px; will-change: height; }
 
-        /* 개별 리듬 애니메이션 */
         .playing .bar:nth-child(1) { animation: wave-1 0.8s infinite ease-in-out; }
         .playing .bar:nth-child(2) { animation: wave-2 0.5s infinite ease-in-out; animation-delay: 0.2s; }
         .playing .bar:nth-child(3) { animation: wave-3 0.7s infinite ease-in-out; animation-delay: 0.1s; }
@@ -94,15 +91,24 @@
         @keyframes wave-2 { 0%, 100% { height: 4px; } 50% { height: 18px; } }
         @keyframes wave-3 { 0%, 100% { height: 8px; } 50% { height: 14px; } }
 
-        /* 레이아웃 공통 */
-        .brand-nav { position: fixed; top: 30px; left: 0; width: 100%; text-align: center; font-weight: 900; font-size: 0.85rem; letter-spacing: 0.4em; text-transform: uppercase; z-index: 1000; mix-blend-mode: difference; color: #fff; pointer-events: none; }
+        /* [수정] 레이아웃 공통 - 상단 타이틀 옆에 로고 배치 */
+        .brand-nav { 
+            position: fixed; top: 30px; left: 0; width: 100%; 
+            display: flex; justify-content: center; align-items: center; gap: 12px;
+            font-weight: 900; font-size: 0.85rem; letter-spacing: 0.4em; text-transform: uppercase; 
+            z-index: 1000; mix-blend-mode: difference; color: #fff; pointer-events: none; 
+        }
+        .brand-nav img { height: 28px; width: auto; } /* 로고 크기 설정 */
+
         .sticky-wrapper { position: sticky; top: 0; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         .intro-container { height: 180vh; }
         .intro-title { font-size: clamp(3rem, 15vw, 10rem); font-weight: 900; letter-spacing: -0.05em; text-align: center; line-height: 0.95; }
+        
         section { width: 100%; min-height: 110vh; display: flex; flex-direction: column; justify-content: center; padding: 0 30px; position: relative; z-index: 10; }
         .reveal-text { font-size: clamp(1.8rem, 7vw, 3.5rem); font-weight: 800; line-height: 1.35; color: rgba(150, 150, 150, 0.15); transition: all 1s cubic-bezier(0.215, 0.61, 0.355, 1); max-width: 950px; margin: 0 auto; transform: translateY(40px); }
         .reveal-text.active { color: var(--text); transform: translateY(0); }
         .highlight { color: var(--accent); }
+        
         .dark-section { background-color: var(--dark-bg); }
         .dark-section .reveal-text { color: rgba(255, 255, 255, 0.05); }
         .dark-section .reveal-text.active { color: var(--dark-text) !important; text-shadow: 0 0 30px rgba(255, 255, 255, 0.4); }
@@ -119,7 +125,11 @@
 <body>
 
     <div class="progress-bar" id="progressBar"></div>
-    <div class="brand-nav">MetaToRI World</div>
+    
+    <div class="brand-nav">
+        <img src="https://raw.githubusercontent.com/metatoriworld/Logo/main/WhiteLogo.png" alt="MTW Logo">
+        <span>MetaToRI World</span>
+    </div>
 
     <audio id="bgm" loop>
         <source src="https://raw.githubusercontent.com/metatoriworld/Music/main/mtlm1.mp3" type="audio/mpeg">
@@ -127,7 +137,6 @@
 
     <div class="bottom-controls">
         <a href="https://open.kakao.com/o/giDA6Wee" target="_blank" class="community-btn">커뮤니티 입장</a>
-        
         <div class="audio-control" id="audioBtn">
             <div class="audio-bars">
                 <div class="bar"></div>
@@ -172,7 +181,6 @@
         const audioBtn = document.getElementById('audioBtn');
         const audioText = document.getElementById('audioText');
 
-        // 사운드 토글
         audioBtn.addEventListener('click', () => {
             if (bgm.paused) {
                 bgm.play();
@@ -185,14 +193,12 @@
             }
         });
 
-        // 스크롤 연동 애니메이션
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const winH = window.innerHeight;
             const fullH = document.body.scrollHeight - winH;
             progressBar.style.width = (scrollY / fullH * 100) + '%';
 
-            // 인트로 확대
             const introLimit = winH * 0.8;
             if (scrollY <= introLimit) {
                 const p = scrollY / introLimit;
@@ -200,7 +206,6 @@
                 introTitle.style.opacity = 1 - (p * 1.2);
             }
 
-            // 아웃트로 축소
             const outroRect = outroTrigger.getBoundingClientRect();
             if (outroRect.top <= 0) {
                 const totalMove = outroTrigger.offsetHeight - winH;
@@ -214,7 +219,6 @@
             }
         });
 
-        // 텍스트 등장 감지
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
