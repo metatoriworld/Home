@@ -8,12 +8,12 @@
     <meta property="og:url" content="https://metatoriworld.github.io/">
     <meta property="og:title" content="MetaToRI World | Dream Never Fades">
     <meta property="og:description" content="꿈은 잊고 있던 행복의 잔상입니다. 메타토리 월드에서 당신의 이야기를 시작하세요.">
-    <meta property="og:image" content="https://raw.githubusercontent.com/metatoriworld/Logo/main/BlackLogo.png">
+    <meta property="og:image" content="https://raw.githubusercontent.com/metatoriworld/Logo/main/BlackLogo.png?v=1">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/metatoriworld/Logo/main/BlackLogo.png">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/metatoriworld/Logo/main/BlackLogo.png?v=1">
 
     <title>MetaToRI World | Dream Never Fades</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
@@ -142,8 +142,8 @@
         <span>MetaToRI World</span>
     </div>
 
-    <audio id="bgm" loop>
-        <source src="https://raw.githubusercontent.com/metatoriworld/Music/main/mtlm1.mp3" type="audio/mpeg">
+    <audio id="bgm" loop preload="auto">
+        <source src="https://raw.githubusercontent.com/metatoriworld/backgroundmusic/main/BMTW1.mp3" type="audio/mpeg">
     </audio>
 
     <div class="bottom-controls">
@@ -192,11 +192,21 @@
         const audioBtn = document.getElementById('audioBtn');
         const audioText = document.getElementById('audioText');
 
-        audioBtn.addEventListener('click', () => {
-            if (bgm.paused) {
-                bgm.play();
+        // 음악 재생 시도 함수
+        function tryPlayMusic() {
+            bgm.play().then(() => {
                 audioBtn.classList.add('playing');
                 audioText.innerText = "SOUND ON";
+            }).catch(err => {
+                console.log("자동 재생이 차단되었습니다. 클릭이 필요합니다.");
+            });
+        }
+
+        // 버튼 클릭 제어
+        audioBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (bgm.paused) {
+                tryPlayMusic();
             } else {
                 bgm.pause();
                 audioBtn.classList.remove('playing');
@@ -204,6 +214,21 @@
             }
         });
 
+        // 첫 클릭 시 오디오 활성화
+        window.addEventListener('click', () => {
+            if (bgm.paused && !audioBtn.classList.contains('playing')) {
+                tryPlayMusic();
+            }
+        }, { once: true });
+
+        // 터치 기기 대응
+        window.addEventListener('touchstart', () => {
+            if (bgm.paused && !audioBtn.classList.contains('playing')) {
+                tryPlayMusic();
+            }
+        }, { once: true });
+
+        // 스크롤 인터랙션
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const winH = window.innerHeight;
@@ -230,6 +255,7 @@
             }
         });
 
+        // 텍스트 순차 노출
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
