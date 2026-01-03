@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://metatoriworld.github.io/">
+    <meta property="og:url" content="https://metatoriworld.github.io/Home/">
     <meta property="og:title" content="MetaToRI World | Dream Never Fades">
     <meta property="og:description" content="꿈은 잊고 있던 행복의 잔상입니다. 메타토리 월드에서 당신의 이야기를 시작하세요.">
     <meta property="og:image" content="https://raw.githubusercontent.com/metatoriworld/Logo/main/BlackLogo.png?v=1">
@@ -103,11 +103,16 @@
         @keyframes wave-2 { 0%, 100% { height: 4px; } 50% { height: 18px; } }
         @keyframes wave-3 { 0%, 100% { height: 8px; } 50% { height: 14px; } }
 
+        /* 상단 로고 & 타이틀 (홈 링크 적용) */
         .brand-nav { 
             position: fixed; top: 30px; left: 0; width: 100%; 
             display: flex; justify-content: center; align-items: center; gap: 12px;
-            font-weight: 900; font-size: 0.85rem; letter-spacing: 0.4em; text-transform: uppercase; 
-            z-index: 1000; mix-blend-mode: difference; color: #fff; pointer-events: none; 
+            z-index: 1000; mix-blend-mode: difference; color: #fff;
+        }
+        .brand-nav a {
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; color: inherit;
+            font-weight: 900; font-size: 0.85rem; letter-spacing: 0.4em; text-transform: uppercase;
         }
         .brand-nav img { height: 28px; width: auto; }
 
@@ -138,8 +143,10 @@
     <div class="progress-bar" id="progressBar"></div>
     
     <div class="brand-nav">
-        <img src="https://raw.githubusercontent.com/metatoriworld/Logo/main/WhiteLogo.png" alt="MTW Logo">
-        <span>MetaToRI World</span>
+        <a href="https://metatoriworld.github.io/Home/">
+            <img src="https://raw.githubusercontent.com/metatoriworld/Logo/main/WhiteLogo.png" alt="MTW Logo">
+            <span>MetaToRI World</span>
+        </a>
     </div>
 
     <audio id="bgm" loop preload="auto">
@@ -175,7 +182,7 @@
             <div style="text-align:center;">
                 <h2 class="outro-logo" id="outroLogo">MetaToRI World</h2>
                 <div class="cta-wrap">
-                    <a href="https://metatoriworld.github.io/underconstruction/" target="_blank" class="btn">더 보기</a>
+                    <a href="https://metatoriworld.github.io/Menu/" class="btn">더 보기</a>
                     <p style="margin-top: 25px; font-size: 0.8rem; color: #888; letter-spacing: 0.2em;">BE THE MAIN CHARACTER</p>
                 </div>
             </div>
@@ -192,17 +199,15 @@
         const audioBtn = document.getElementById('audioBtn');
         const audioText = document.getElementById('audioText');
 
-        // 음악 재생 시도 함수
         function tryPlayMusic() {
             bgm.play().then(() => {
                 audioBtn.classList.add('playing');
                 audioText.innerText = "SOUND ON";
             }).catch(err => {
-                console.log("자동 재생이 차단되었습니다. 클릭이 필요합니다.");
+                console.log("자동 재생이 차단되었습니다.");
             });
         }
 
-        // 버튼 클릭 제어
         audioBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (bgm.paused) {
@@ -214,21 +219,18 @@
             }
         });
 
-        // 첫 클릭 시 오디오 활성화
         window.addEventListener('click', () => {
             if (bgm.paused && !audioBtn.classList.contains('playing')) {
                 tryPlayMusic();
             }
         }, { once: true });
 
-        // 터치 기기 대응
         window.addEventListener('touchstart', () => {
             if (bgm.paused && !audioBtn.classList.contains('playing')) {
                 tryPlayMusic();
             }
         }, { once: true });
 
-        // 스크롤 인터랙션
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const winH = window.innerHeight;
@@ -255,7 +257,6 @@
             }
         });
 
-        // 텍스트 순차 노출
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
